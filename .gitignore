@@ -1,12 +1,31 @@
+local.properties
+*.tmp
+.DS_Store
+.ant.properties
+
+# Class Files
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package Files
 *.jar
 *.war
 *.ear
 
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Eclipse configs
+.settings
+.project
+
+# Locally stored "Eclipse launch configurations"
+*.launch
