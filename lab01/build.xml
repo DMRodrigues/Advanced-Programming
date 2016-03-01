@@ -1,0 +1,38 @@
+<project name="lab01" default="compile" basedir=".">
+    
+    <property name="src" location="src"/>
+    <property name="classes" location="classes"/>
+    <property name="jar" location="jar"/>
+    
+    <property name="main-class"  value="pt.ist.ap.labs.Main"/>
+    
+    <target name="init" >
+        <mkdir dir="${classes}"/>
+    </target>
+    
+    <target name="clean" >
+        <delete dir="${classes}"/>
+    </target>
+    
+    <target name="compile" depends="init" >
+        <javac debug="true" srcdir="${src}" destdir="${classes}" includeantruntime="false"/>
+    </target>
+    
+<!--
+    <target name="jar" depends="compile" >
+        <mkdir dir="${jar}"/>
+        <jar destfile="${jar}/${ant.project.name}.jar" basedir="${classes}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+     </target>
+ -->
+    
+    <target name="run" depends="compile">
+        <java classname="${main-class}">
+            <classpath location="${classes}"/>
+        </java>
+    </target>
+    
+</project>
