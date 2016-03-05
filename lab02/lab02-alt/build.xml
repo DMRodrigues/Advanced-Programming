@@ -1,0 +1,30 @@
+<project name="lab02" default="hello" basedir=".">
+	
+	<!-- fazer um print pa verificar -->
+	<target name="hello" description="sayhello">
+		<echo message="Hello!" />
+	</target>
+
+	<property name="main-class" value="pt.ist.ap.lab.Shell"/>
+	<property name="src" location="src"/>
+	<property name="build" location="classes"/>
+	
+	<target name="init">
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+
+	<target name="run" depends="compile">
+		<java classname="${main-class}">
+			<classpath location="${build}"/>
+		</java>
+	</target>
+
+</project>
