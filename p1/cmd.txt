@@ -1,0 +1,5 @@
+>javac -cp javassist.jar:src/ist/meic/pa/BoxingProfilerManager src/ist/meic/pa/*.java
+
+>cd classes
+
+>java -cp ../javassist.jar:ist/meic/pa: ist/meic/pa/BoxingProfiler ist.meic.pa.SumIntegers

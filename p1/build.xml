@@ -28,21 +28,13 @@
         	<zipgroupfileset dir="." includes="javassist.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
-            	<attribute name="Javassist" value="main"/>
             </manifest>
         </jar>
      </target>
-	
-    <target name="run" depends="compile">
-        <java classname="${main-class}">
-            <arg line="ist.meic.pa.SumIntegers"/>
-            <classpath location="${classes}"/>
-        </java>
-    </target>
     
-	<target name="run-jar" depends="jar">
+	<target name="run" depends="jar">
         <java jar="${main-class}.jar" fork="true">
-            <arg line="ist.meic.pa.SumIntegers"/>
+            <arg line="SumIntegers"/>
         </java>
     </target>
 </project>

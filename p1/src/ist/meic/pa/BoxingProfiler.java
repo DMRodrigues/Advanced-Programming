@@ -9,7 +9,6 @@ public class BoxingProfiler {
 	public static void main(String[] args) {
 		
 		try {
-			
 			CtClass ctClass = ClassPool.getDefault().get(args[0]);
 
 			BoxingProfilerManager profilerManager = new BoxingProfilerManager(ctClass, args);
@@ -17,7 +16,7 @@ public class BoxingProfiler {
 			profilerManager.printResults();
 			
 		} catch (NotFoundException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 	}
