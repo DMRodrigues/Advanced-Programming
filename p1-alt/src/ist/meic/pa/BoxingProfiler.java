@@ -14,10 +14,13 @@ import javassist.expr.MethodCall;
 
 public class BoxingProfiler {
 
-	private static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> res = new TreeMap<String, TreeMap<String, TreeMap<String, Integer>>>();
 	private static final String[] typeValue = { "intValue", "longValue", "floatValue", "charValue", "doubleValue", "booleanValue", "shortValue", "byteValue" };
-	private static CtClass ctClass = null;
+
+	private static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> boxingResult = new TreeMap<String, TreeMap<String, TreeMap<String, Integer>>>();
+
 	private static String[] args = null;
+
+	private static CtClass ctClass = null;
 	private static String[] ctClassArgs = null;
 
 	public static void main(String[] args) {
@@ -32,8 +35,8 @@ public class BoxingProfiler {
 	private static void processInput(String[] argts) {
 		try {
 			args = argts;
-			
-			// tratar classpath
+
+			// tratar classpath ou deixar assim ?
 			ctClass = ClassPool.getDefault().get("ist.meic.pa." + args[0]);
 			ctClassArgs = new String[args.length - 1];
 			System.arraycopy(args, 1, ctClassArgs, 0, ctClassArgs.length);
@@ -76,24 +79,28 @@ public class BoxingProfiler {
 		try {
 			for (final CtMethod m : ctClass.getDeclaredMethods()) {
 
+				boxingResult.put(removePackage(m.getLongName()), new TreeMap<String, TreeMap<String, Integer>>());
+
 				m.instrument(new ExprEditor() {
 					public void edit(MethodCall mc) throws CannotCompileException {
 
 						// boxed operations
 						if (mc.getMethodName().equals("valueOf")) {// && getTypeVar(mc.getSignature()) != null) {
 
-							checkTreeMapValues(removePackage(m.getLongName()), getTypeVar(mc.getSignature()));
+							if (boxingResult.get(removePackage(m.getLongName())).get(getTypeVar(mc.getSignature())) == null)
+								boxingResult.get(removePackage(m.getLongName())).put(getTypeVar(mc.getSignature()), new TreeMap<String, Integer>());
 
-							res.get(removePackage(m.getLongName())).get(getTypeVar(mc.getSignature())).put("boxed", 0);
+							boxingResult.get(removePackage(m.getLongName())).get(getTypeVar(mc.getSignature())).put("boxed", 0);
 							mc.replace(createBoxedValueOf(removePackage(m.getLongName()), getTypeVar(mc.getSignature())));
 						}
 
 						// unboxed operations
 						else if (Arrays.asList(typeValue).contains(mc.getMethodName())) {
 
-							checkTreeMapValues(removePackage(m.getLongName()), getTypeVar(mc.getMethodName()));
+							if (boxingResult.get(removePackage(m.getLongName())).get(getTypeVar(mc.getMethodName())) == null)
+								boxingResult.get(removePackage(m.getLongName())).put(getTypeVar(mc.getMethodName()), new TreeMap<String, Integer>());
 
-							res.get(removePackage(m.getLongName())).get(getTypeVar(mc.getMethodName())).put("unboxed", 0);
+							boxingResult.get(removePackage(m.getLongName())).get(getTypeVar(mc.getMethodName())).put("unboxed", 0);
 							mc.replace(createUnboxedValueOf(removePackage(m.getLongName()), getTypeVar(mc.getMethodName())));
 						}
 					}
@@ -106,6 +113,7 @@ public class BoxingProfiler {
 		}
 	}
 
+	// to improve
 	private static String getTypeVar(String t) {
 		if (t.contains("Integer") || t.contains(typeValue[0]))
 			return new String("java.lang.Integer");
@@ -126,32 +134,32 @@ public class BoxingProfiler {
 		return null; // entao n interessa
 	}
 
-	private static String removePackage(String t) {
-		// ist.meic.pa.[12] -> 10
-		return t.substring(12, t.length());
+	private static String removePackage(String s) {
+		// ist.meic.pa.[12] -> conta a partir daqui
+		return s.substring(12, s.length());
 	}
 
-	private static String createBoxedValueOf(String mname, String msig) {
-		return "{ ist.meic.pa.BoxingProfiler.incValueBoxed(\"" + mname + "\",\"" + msig + "\");" + "$_ = $proceed($$); }";
+	private static String createBoxedValueOf(String mthName, String varType) {
+		return "{ ist.meic.pa.BoxingProfiler.incValueBoxed(\"" + mthName + "\",\"" + varType + "\");" + "$_ = $proceed($$); }";
 	}
 
-	private static String createUnboxedValueOf(String mname, String msig) {
-		return "{ ist.meic.pa.BoxingProfiler.incValueUnboxed(\"" + mname + "\",\"" + msig + "\");" + "$_ = $proceed($$); }";
+	private static String createUnboxedValueOf(String mthName, String varType) {
+		return "{ ist.meic.pa.BoxingProfiler.incValueUnboxed(\"" + mthName + "\",\"" + varType + "\");" + "$_ = $proceed($$); }";
 	}
 
-	public static void incValueBoxed(String n, String t) {
-		int temp = res.get(n).get(t).get("boxed");
-		res.get(n).get(t).put("boxed", ++temp);
+	public static void incValueBoxed(String mthName, String varType) {
+		int temp = boxingResult.get(mthName).get(varType).get("boxed");
+		boxingResult.get(mthName).get(varType).put("boxed", ++temp);
 	}
 
-	public static void incValueUnboxed(String n, String t) {
-		int temp = res.get(n).get(t).get("unboxed");
-		res.get(n).get(t).put("unboxed", ++temp);
+	public static void incValueUnboxed(String mthName, String varType) {
+		int temp = boxingResult.get(mthName).get(varType).get("unboxed");
+		boxingResult.get(mthName).get(varType).put("unboxed", ++temp);
 	}
 
 	private static void printResult() {
-		for (String entryType : res.keySet()) {
-			TreeMap<String, TreeMap<String, Integer>> entryMethT = res.get(entryType);
+		for (String entryType : boxingResult.keySet()) {
+			TreeMap<String, TreeMap<String, Integer>> entryMethT = boxingResult.get(entryType);
 
 			for (String entryMeth : entryMethT.keySet()) {
 				TreeMap<String, Integer> entryVarT = entryMethT.get(entryMeth);
@@ -160,14 +168,6 @@ public class BoxingProfiler {
 					System.out.println(entryType + " " + entryVar + " " + entryVarT.get(entryVar) + " " + entryMeth);
 			}
 		}
-	}
-
-	private static void checkTreeMapValues(String mthName, String varType) {
-		// se ainda n vimos metodo criar
-		if (res.get(mthName) == null)
-			res.put(mthName, new TreeMap<String, TreeMap<String, Integer>>());
-		if (res.get(mthName).get(varType) == null)
-			res.get(mthName).put(varType, new TreeMap<String, Integer>());
 	}
 
 }
