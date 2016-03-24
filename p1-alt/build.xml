@@ -1,34 +1,34 @@
 <project name="p1-alt" default="jar" basedir=".">
     
     <property name="src" location="src"/>
-    <property name="classes" location="classes"/>
+    <property name="bin" location="bin"/>
     <property name="jar" location="jar"/>
     
     <property name="main-class"  value="ist.meic.pa.BoxingProfiler"/>
     
     <target name="init" >
-        <mkdir dir="${classes}"/>
+        <mkdir dir="${bin}"/>
     </target>
     
     <target name="clean" >
-        <delete dir="${classes}"/>
-    	<delete file="${main-class}.jar"/>
+        <delete dir="${bin}"/>
+    	<delete file="${jar.main-class}.jar"/>
     </target>
     
     <target name="compile" depends="init" >
-        <javac debug="true" srcdir="${src}" destdir="${classes}" includeantruntime="false">
+        <javac debug="true" srcdir="${src}" destdir="${bin}" includeantruntime="false" >
             <classpath>
-                <pathelement path="jar/javassist.jar"/>
+                <pathelement path="${jar}/javassist.jar"/>
             </classpath>
         </javac>
     </target>
     
-    <target name="jar" depends="compile" >
-        <jar destfile="${main-class}.jar" basedir="${classes}">
-        	<zipgroupfileset dir="." includes="javassist.jar"/>
+    <target name="compile-jar" depends="compile" >
+        <jar destfile="${jar}/${main-class}.jar" basedir="${bin}">
+        	<zipgroupfileset dir="${jar}" includes="javassist.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
-            	<attribute name="Javassist" value="main"/>
+            	<attribute name="javassist" value="main"/>
             </manifest>
         </jar>
      </target>
@@ -36,13 +36,13 @@
     <target name="run" depends="compile">
         <java classname="${main-class}">
             <arg line="ist.meic.pa.SumIntegers"/>
-            <classpath location="${classes}"/>
+            <classpath location="${bin}"/>
         </java>
     </target>
     
-	<target name="run-jar" depends="jar">
-        <java jar="${main-class}.jar" fork="true">
-            <arg line="ist.meic.pa.SumIntegers"/>
+	<target name="run-jar" depends="compile-jar">
+        <java jar="${jar}/${main-class}.jar" fork="true">
+            <arg line="${arg}"/>
         </java>
     </target>
 </project>
