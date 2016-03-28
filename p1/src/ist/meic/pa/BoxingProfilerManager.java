@@ -52,22 +52,22 @@ public class BoxingProfilerManager {
 					@Override
 					public void edit(MethodCall mc) throws CannotCompileException {
 
+						String methodCallName = mc.getMethodName();
 						String methodName = mc.where().getLongName();
 						String className = mc.getClassName();
 
 						Map<String, Map<String, Integer>> m = resultMap.get(methodName);
-						if (mc.getMethodName().equals("valueOf")) {
+						if (methodCallName.equals("valueOf")) {
 							if (!m.containsKey(className)) {
 								m.put(className, new TreeMap<String, Integer>());
 							}
-							Map<String, Integer> mm = m.get(className);
-							mm.put(BOXED, 0);
+							m.get(className).put(BOXED, 0);
 							mc.replace(String.format(BOX_TEMPLATE, methodName, className, BOXED));
 
-						} else if (mc.getMethodName().equals("intValue") || mc.getMethodName().equals("longValue")
-								|| mc.getMethodName().equals("doubleValue") || mc.getMethodName().equals("floatValue")
-								|| mc.getMethodName().equals("booleanValue") || mc.getMethodName().equals("byteValue")
-								|| mc.getMethodName().equals("charValue") || mc.getMethodName().equals("shortValue")) {
+						} else if (methodCallName.equals("intValue") 	|| methodCallName.equals("longValue")
+								|| methodCallName.equals("doubleValue") || methodCallName.equals("floatValue")
+								|| methodCallName.equals("booleanValue")||methodCallName.equals("byteValue")
+								|| methodCallName.equals("charValue")	|| methodCallName.equals("shortValue")) {
 							try {
 								String wrapperType = ((CtPrimitiveType) mc.getMethod().getReturnType())
 										.getWrapperName();
@@ -76,8 +76,7 @@ public class BoxingProfilerManager {
 									if (!m.containsKey(className)) {
 										m.put(className, new TreeMap<String, Integer>());
 									}
-									Map<String, Integer> mm = m.get(className);
-									mm.put(UNBOXED, 0);
+									m.get(className).put(UNBOXED, 0);
 									mc.replace(String.format(UNBOX_TEMPLATE, methodName, className, UNBOXED));
 								}
 							} catch (NotFoundException e) {
