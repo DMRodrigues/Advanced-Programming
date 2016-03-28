@@ -22,11 +22,9 @@ public class BoxingProfilerManager {
 	private static final String BOXED = "boxed";
 	private static final String UNBOXED = "unboxed";
 
-	private static final String BOX_TEMPLATE = "{ "
-			+ "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
+	private static final String BOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
 			+ "$_ = $proceed($$); " + "}";
-	private static final String UNBOX_TEMPLATE = "{ "
-			+ "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
+	private static final String UNBOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
 			+ "$_ = $proceed(); " + "}";
 
 	private static Map<String, Map<String, Map<String, Integer>>> resultMap = new TreeMap<String, Map<String, Map<String, Integer>>>();
@@ -64,10 +62,10 @@ public class BoxingProfilerManager {
 							m.get(className).put(BOXED, 0);
 							mc.replace(String.format(BOX_TEMPLATE, methodName, className, BOXED));
 
-						} else if (methodCallName.equals("intValue") 	|| methodCallName.equals("longValue")
+						} else if (methodCallName.equals("intValue") || methodCallName.equals("longValue")
 								|| methodCallName.equals("doubleValue") || methodCallName.equals("floatValue")
-								|| methodCallName.equals("booleanValue")||methodCallName.equals("byteValue")
-								|| methodCallName.equals("charValue")	|| methodCallName.equals("shortValue")) {
+								|| methodCallName.equals("booleanValue") || methodCallName.equals("byteValue")
+								|| methodCallName.equals("charValue") || methodCallName.equals("shortValue")) {
 							try {
 								String wrapperType = ((CtPrimitiveType) mc.getMethod().getReturnType())
 										.getWrapperName();
@@ -92,6 +90,9 @@ public class BoxingProfilerManager {
 			}
 		}
 
+	}
+
+	public void run() {
 		try {
 
 			Class<?> rtClass = ctClass.toClass();

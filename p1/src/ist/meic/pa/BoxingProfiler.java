@@ -13,6 +13,7 @@ public class BoxingProfiler {
 
 			BoxingProfilerManager profilerManager = new BoxingProfilerManager(ctClass, args);
 			profilerManager.profile();
+			profilerManager.run();
 			profilerManager.printResults();
 			
 		} catch (NotFoundException e) {
