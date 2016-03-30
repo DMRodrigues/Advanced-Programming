@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.CtPrimitiveType;
@@ -22,15 +23,18 @@ public class BoxingProfilerManager {
 	private static final String BOXED = "boxed";
 	private static final String UNBOXED = "unboxed";
 
-	private static final String BOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
+	private static final String BOX_TEMPLATE = "{ "
+			+ "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
 			+ "$_ = $proceed($$); " + "}";
-	private static final String UNBOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
+	private static final String UNBOX_TEMPLATE = "{ " 
+			+ "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
 			+ "$_ = $proceed(); " + "}";
 
+	//TreeMap para garantir ordem natural das chaves
 	private static Map<String, Map<String, Map<String, Integer>>> resultMap = new TreeMap<String, Map<String, Map<String, Integer>>>();
 
-	public BoxingProfilerManager(CtClass ctClass, String[] args) {
-		this.ctClass = ctClass;
+	public BoxingProfilerManager(String[] args) throws NotFoundException {
+		this.ctClass = ClassPool.getDefault().get(args[0]);
 		String[] restArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 		this.args = restArgs;
@@ -40,6 +44,7 @@ public class BoxingProfilerManager {
 	public void profile() {
 		for (CtMethod ctMethod : ctClass.getDeclaredMethods()) {
 
+			//adicionar ao mapa um novo método
 			if (!resultMap.containsKey(ctMethod.getLongName())) {
 				resultMap.put(ctMethod.getLongName(), new TreeMap<String, Map<String, Integer>>());
 			}
@@ -55,30 +60,35 @@ public class BoxingProfilerManager {
 						String className = mc.getClassName();
 
 						Map<String, Map<String, Integer>> m = resultMap.get(methodName);
+						
+						//Operações box chamam sempre o método "valueOf" independentemente da classe
 						if (methodCallName.equals("valueOf")) {
 							if (!m.containsKey(className)) {
 								m.put(className, new TreeMap<String, Integer>());
 							}
 							m.get(className).put(BOXED, 0);
+							//adiciona comportamento(incrementar o contador) antes da invocação do respetivo método
 							mc.replace(String.format(BOX_TEMPLATE, methodName, className, BOXED));
-
-						} else if (methodCallName.equals("intValue") || methodCallName.equals("longValue")
+						} 
+						//Operações unbox chamam sempre o método "<tipo>Value"
+						else if (methodCallName.equals("intValue") || methodCallName.equals("longValue")
 								|| methodCallName.equals("doubleValue") || methodCallName.equals("floatValue")
 								|| methodCallName.equals("booleanValue") || methodCallName.equals("byteValue")
 								|| methodCallName.equals("charValue") || methodCallName.equals("shortValue")) {
 							try {
-								String wrapperType = ((CtPrimitiveType) mc.getMethod().getReturnType())
-										.getWrapperName();
+								String wrapperType = ((CtPrimitiveType) mc.getMethod().getReturnType()).getWrapperName();
+								//verifica se o wrapper type do método chamado é igual ao type da classe
 								if (wrapperType.equals(className)) {
 
 									if (!m.containsKey(className)) {
 										m.put(className, new TreeMap<String, Integer>());
 									}
 									m.get(className).put(UNBOXED, 0);
+									//adiciona comportamento(incrementar o contador) antes da invocação do respetivo método
 									mc.replace(String.format(UNBOX_TEMPLATE, methodName, className, UNBOXED));
 								}
 							} catch (NotFoundException e) {
-								System.err.println(e);
+								throw new RuntimeException(e);
 							}
 						}
 
@@ -86,7 +96,7 @@ public class BoxingProfilerManager {
 
 				});
 			} catch (CannotCompileException e) {
-				System.err.println(e);
+				throw new RuntimeException(e);
 			}
 		}
 
@@ -95,13 +105,14 @@ public class BoxingProfilerManager {
 	public void run() {
 		try {
 
+			//converte a compile-time class (ctClass) num objeto java.lang.Class
 			Class<?> rtClass = ctClass.toClass();
 			Method main = rtClass.getMethod("main", argsClass);
 			main.invoke(null, new Object[] { args });
 
 		} catch (CannotCompileException | NoSuchMethodException | SecurityException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
-			System.err.println(e);
+			throw new RuntimeException(e);
 		}
 	}
 

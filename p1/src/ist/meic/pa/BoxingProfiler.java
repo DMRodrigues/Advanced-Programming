@@ -1,7 +1,5 @@
 package ist.meic.pa;
 
-import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.NotFoundException;
 
 public class BoxingProfiler {
@@ -9,15 +7,13 @@ public class BoxingProfiler {
 	public static void main(String[] args) {
 		
 		try {
-			CtClass ctClass = ClassPool.getDefault().get(args[0]);
-
-			BoxingProfilerManager profilerManager = new BoxingProfilerManager(ctClass, args);
+			BoxingProfilerManager profilerManager = new BoxingProfilerManager(args);
 			profilerManager.profile();
 			profilerManager.run();
 			profilerManager.printResults();
 			
 		} catch (NotFoundException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
