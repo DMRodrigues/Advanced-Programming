@@ -5,6 +5,7 @@
     <property name="jar" location="jar"/>
     
     <property name="main-class"  value="ist.meic.pa.BoxingProfiler"/>
+	<property name="main-jar"  value="boxingProfiler"/>
     
     <target name="init" >
         <mkdir dir="${bin}"/>
@@ -12,20 +13,20 @@
     
     <target name="clean" >
         <delete dir="${bin}"/>
-    	<delete file="${jar.main-class}.jar"/>
+    	<delete file="${main-class}.jar"/>
     </target>
     
     <target name="compile" depends="init" >
         <javac debug="true" srcdir="${src}" destdir="${bin}" includeantruntime="false" >
             <classpath>
-                <pathelement path="${jar}/javassist.jar"/>
+              <pathelement path="javassist.jar"/>
             </classpath>
         </javac>
     </target>
     
     <target name="compile-jar" depends="compile" >
-        <jar destfile="${jar}/${main-class}.jar" basedir="${bin}">
-        	<zipgroupfileset dir="${jar}" includes="javassist.jar"/>
+        <jar destfile="${main-jar}.jar" basedir="${bin}">
+        	<zipgroupfileset dir="." includes="javassist.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             	<attribute name="javassist" value="main"/>
@@ -41,7 +42,7 @@
     </target>
     
 	<target name="run-jar" depends="compile-jar">
-        <java jar="${jar}/${main-class}.jar" fork="true">
+        <java jar="${main-class}.jar" fork="true">
             <arg line="${arg}"/>
         </java>
     </target>

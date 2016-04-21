@@ -5,6 +5,7 @@
     <property name="jar" location="jar"/>
     
     <property name="main-class"  value="ist.meic.pa.BoxingProfiler"/>
+    <property name="main-jar"  value="boxingProfiler"/>
     
     <target name="init" >
         <mkdir dir="${classes}"/>
@@ -12,7 +13,7 @@
     
     <target name="clean" >
         <delete dir="${classes}"/>
-    	<delete file="${main-class}.jar"/>
+    	<delete file="${main-jar}.jar"/>
     </target>
     
     <target name="compile" depends="init" >
@@ -24,17 +25,16 @@
     </target>
     
     <target name="jar" depends="compile" >
-        <jar destfile="${main-class}.jar" basedir="${classes}">
-        	<zipgroupfileset dir="." includes="javassist.jar"/>
+        <jar destfile="${main-jar}.jar" basedir="${classes}">
+            <zipgroupfileset dir="." includes="javassist.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>
         </jar>
-     </target>
-    
-	<target name="run" depends="jar">
-        <java jar="${main-class}.jar" fork="true">
-            <arg line="SumIntegers"/>
+    </target>
+	<target name="run" depends="compile">
+        <java jar="${main-jar}.jar" fork="true">
+            <arg line="${arg}"/>
         </java>
     </target>
 </project>
