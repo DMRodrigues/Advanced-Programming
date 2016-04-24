@@ -1,4 +1,4 @@
-package ist.meic.pa.GenericFunctions;
+package ist.meic.pa.GenericFunctionsExtended;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,11 +17,41 @@ public class GenericFunction {
     }
 
     public void addMethod(GFMethod method) {
-
 	try {
 	    Method[] m = method.getClass().getDeclaredMethods();
 	    if (m.length > 0 && m[0].getName().equals("call"))
 		methods.addMethod(method, m[0]);
+	} catch (SecurityException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    public void addAfterMethod(GFMethod method) {
+	try {
+	    Method[] m = method.getClass().getDeclaredMethods();
+	    if (m.length > 0 && m[0].getName().equals("call"))
+		methods.addAfterMethod(method, m[0]);
+	} catch (SecurityException e) {
+	    e.printStackTrace();
+	}
+
+    }
+
+    public void addBeforeMethod(GFMethod method) {
+	try {
+	    Method[] m = method.getClass().getDeclaredMethods();
+	    if (m.length > 0 && m[0].getName().equals("call"))
+		methods.addBeforeMethod(method, m[0]);
+	} catch (SecurityException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    public void addAroundMethod(GFMethod method) {
+	try {
+	    Method[] m = method.getClass().getDeclaredMethods();
+	    if (m.length > 0 && m[0].getName().equals("call"))
+		methods.addAroundMethod(method, m[0]);
 	} catch (SecurityException e) {
 	    e.printStackTrace();
 	}
@@ -60,26 +90,6 @@ public class GenericFunction {
 	int length = cause.length();
 	cause.replace(length - 2, length, "]");
 	return cause.toString();
-    }
-
-    public void addAfterMethod(GFMethod method) {
-	try {
-	    Method[] m = method.getClass().getDeclaredMethods();
-	    if (m.length > 0 && m[0].getName().equals("call"))
-		methods.addAfterMethod(method, m[0]);
-	} catch (SecurityException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    public void addBeforeMethod(GFMethod method) {
-	try {
-	    Method[] m = method.getClass().getDeclaredMethods();
-	    if (m.length > 0 && m[0].getName().equals("call"))
-		methods.addBeforeMethod(method, m[0]);
-	} catch (SecurityException e) {
-	    e.printStackTrace();
-	}
     }
 
 }

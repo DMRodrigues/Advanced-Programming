@@ -16,7 +16,7 @@
     </target>
     
     <target name="compile" depends="init" >
-        <javac target="1.8" "debug="true" srcdir="${src}" destdir="${classes}" includeantruntime="false"/>
+        <javac target="1.8" debug="true" srcdir="${src}" destdir="${classes}" includeantruntime="false"/>
     </target>
     
     <target name="jar" depends="compile" >
