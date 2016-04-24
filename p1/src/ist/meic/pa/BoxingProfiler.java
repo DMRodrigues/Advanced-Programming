@@ -9,7 +9,6 @@ public class BoxingProfiler {
 		try {
 			BoxingProfilerManager profilerManager = new BoxingProfilerManager(args);
 			profilerManager.profile();
-			profilerManager.run();
 			profilerManager.printResults();
 			
 		} catch (NotFoundException e) {

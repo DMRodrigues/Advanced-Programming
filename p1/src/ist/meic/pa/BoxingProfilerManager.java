@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtPrimitiveType;
@@ -22,7 +23,6 @@ public class BoxingProfilerManager {
 	private static final String BOXED = "boxed";
 	private static final String UNBOXED = "unboxed";
 
-<<<<<<< HEAD
 	private static final String BOX_TEMPLATE = "{ "
 			+ "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
 			+ "$_ = $proceed($$); " + "}";
@@ -37,15 +37,10 @@ public class BoxingProfilerManager {
 	private static Map<String, Map<String, Map<String, Integer>>> resultMap =
     
         new TreeMap<String, Map<String, Map<String, Integer>>>();
-=======
-	private static final String BOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");" + "$_ = $proceed($$); " + "}";
-	private static final String UNBOX_TEMPLATE = "{ " + "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");" + "$_ = $proceed(); " + "}";
 
-	private static Map<String, Map<String, Map<String, Integer>>> resultMap = new TreeMap<String, Map<String, Map<String, Integer>>>();
->>>>>>> 42690032c1de9983d7b4b32a652a37c6a7c89ac0
 
-	public BoxingProfilerManager(CtClass ctClass, String[] args) {
-		this.ctClass = ctClass;
+	public BoxingProfilerManager(String[] args) throws NotFoundException {
+		this.ctClass = ClassPool.getDefault().get(args[0]);
 		String[] restArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, restArgs, 0, restArgs.length);
 		this.args = restArgs;
@@ -134,8 +129,8 @@ public class BoxingProfilerManager {
 				for (String operation : resultMap.get(methodName).get(className).keySet()) {
                     
 					Integer counter = resultMap.get(methodName).get(className).get(operation);
-                    
-                    System.err.println(methodName + " " + operation + " " + counter + " " + className);
+                    if(counter > 0)
+                    	System.err.println(methodName + " " + operation + " " + counter + " " + className);
 				}
 			}
 		}
