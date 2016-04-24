@@ -29,6 +29,7 @@ public class BoxingProfilerManager {
 	private static final String UNBOX_TEMPLATE = ""
             + "{ "
 			+       "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
+<<<<<<< HEAD
 			+       "$_ = $proceed(); "
             + "}";
 
@@ -38,6 +39,12 @@ public class BoxingProfilerManager {
     
         new TreeMap<String, Map<String, Map<String, Integer>>>();
 
+=======
+			+       "$_ = $proceed(); " + "}";
+
+	// TreeMap para garantir ordem natural das chaves
+	private static Map<String, Map<String, Map<String, Integer>>> resultMap = new TreeMap<String, Map<String, Map<String, Integer>>>();
+>>>>>>> b4c2ab74997f1da75860fc7fe20b72554f969061
 
 	public BoxingProfilerManager(String[] args) throws NotFoundException {
 		this.ctClass = ClassPool.getDefault().get(args[0]);
@@ -48,9 +55,9 @@ public class BoxingProfilerManager {
 	}
 
 	public void profile() {
-
 		for (CtBehavior ctBehavior : ctClass.getDeclaredBehaviors()) {
-
+			
+			// adicionar ao mapa um novo método
 			if (!resultMap.containsKey(ctBehavior.getLongName())) {
 				resultMap.put(ctBehavior.getLongName(), new TreeMap<String, Map<String, Integer>>());
 			}
@@ -65,53 +72,60 @@ public class BoxingProfilerManager {
 						String className = mc.getClassName();
 
 						Map<String, Map<String, Integer>> m = resultMap.get(methodName);
+						
+						// Operações box chamam sempre o método "valueOf" independentemente da classe
 						if (mc.getMethodName().equals("valueOf")) {
 							if (!m.containsKey(className)) {
 								m.put(className, new TreeMap<String, Integer>());
 							}
-							Map<String, Integer> mm = m.get(className);
-							mm.put(BOXED, 0);
+							m.get(className).put(BOXED, 0);
+							//adiciona comportamento(incrementar o contador) antes da invocação do respetivo método
 							mc.replace(String.format(BOX_TEMPLATE, methodName, className, BOXED));
 
 						}
-						else if (mc.getMethodName().equals("intValue") || mc.getMethodName().equals("longValue") || mc.getMethodName().equals("doubleValue") || mc.getMethodName().equals("floatValue")
-								|| mc.getMethodName().equals("booleanValue") || mc.getMethodName().equals("byteValue") || mc.getMethodName().equals("charValue")
-								|| mc.getMethodName().equals("shortValue")) {
+						//Operações unbox chamam sempre o método "<tipo>Value"
+						else if (mc.getMethodName().equals("intValue") || mc.getMethodName().equals("longValue")
+								|| mc.getMethodName().equals("doubleValue") || mc.getMethodName().equals("floatValue")
+								|| mc.getMethodName().equals("booleanValue") || mc.getMethodName().equals("byteValue")
+								|| mc.getMethodName().equals("charValue") || mc.getMethodName().equals("shortValue")) {
 							try {
 								String wrapperType = ((CtPrimitiveType) mc.getMethod().getReturnType()).getWrapperName();
+								//verifica se o wrapper type do método chamado é igual ao type da classe
 								if (wrapperType.equals(className)) {
 
 									if (!m.containsKey(className)) {
 										m.put(className, new TreeMap<String, Integer>());
 									}
-									Map<String, Integer> mm = m.get(className);
-									mm.put(UNBOXED, 0);
+									m.get(className).put(UNBOXED, 0);
+									//adiciona comportamento(incrementar o contador) antes da invocação do respetivo método
 									mc.replace(String.format(UNBOX_TEMPLATE, methodName, className, UNBOXED));
 								}
 							}
 							catch (NotFoundException e) {
-								System.err.println(e);
+								throw new RuntimeException(e);
 							}
 						}
-
 					}
 
 				});
 			}
 			catch (CannotCompileException e) {
-				System.err.println(e);
+				throw new RuntimeException(e);
 			}
 		}
-
+	}
+	
+	public void run() {
 		try {
 
+			// converte a compile-time class (ctClass) num objeto java.lang.Class
 			Class<?> rtClass = ctClass.toClass();
 			Method main = rtClass.getMethod("main", argsClass);
 			main.invoke(null, new Object[] { args });
 
-		}
-		catch (CannotCompileException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			System.err.println(e);
+		} catch (CannotCompileException | NoSuchMethodException | SecurityException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -123,18 +137,19 @@ public class BoxingProfilerManager {
 
 	public void printResults() {
 		for (String methodName : resultMap.keySet()) {
-            
 			for (String className : resultMap.get(methodName).keySet()) {
-                
 				for (String operation : resultMap.get(methodName).get(className).keySet()) {
-                    
 					Integer counter = resultMap.get(methodName).get(className).get(operation);
+<<<<<<< HEAD
                     if(counter > 0)
                     	System.err.println(methodName + " " + operation + " " + counter + " " + className);
+=======
+					if (counter > 0)
+						System.err.println(methodName + " " + operation + " " + counter + " " + className);
+>>>>>>> b4c2ab74997f1da75860fc7fe20b72554f969061
 				}
 			}
 		}
-
 	}
 
 }
