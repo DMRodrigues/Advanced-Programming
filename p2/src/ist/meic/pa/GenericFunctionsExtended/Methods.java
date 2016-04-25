@@ -32,8 +32,7 @@ public class Methods {
 
     public List<Entry<GFMethod, Method>> getEffectiveMethod(Object[] args) {
 	List<Entry<GFMethod, Method>> methods = new ArrayList<>();
-	if(!this.aroundMethods.isEmpty())
-	    methods.addAll(this.getApplicableMethods(this.aroundMethods, args));
+	methods.addAll(this.getApplicableMethods(this.aroundMethods, args));
 	methods.addAll(this.getApplicableMethods(this.beforeMethods, args));
 	methods.addAll(this.getApplicableMethods(this.primaryMethods, args));
 	methods.addAll(this.getApplicableMethods(this.afterMethods, args));
