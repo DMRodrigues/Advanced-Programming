@@ -1,4 +1,4 @@
-package ist.meic.pa.GenericFunctions;
+package ist.meic.pa.GenericFunctionsExtended;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -9,27 +9,33 @@ import java.util.Map.Entry;
 
 public class Methods {
 
-    private Map<GFMethod, Method> primary_methods = new HashMap<>();
-    private Map<GFMethod, Method> before_methods = new HashMap<>();
-    private Map<GFMethod, Method> after_methods = new HashMap<>();
+    private Map<GFMethod, Method> primaryMethods = new HashMap<>();
+    private Map<GFMethod, Method> beforeMethods = new HashMap<>();
+    private Map<GFMethod, Method> afterMethods = new HashMap<>();
+    private Map<GFMethod, Method> aroundMethods = new HashMap<>();
 
     public void addMethod(GFMethod gfMethod, Method method) {
-	primary_methods.put(gfMethod, method);
+	this.primaryMethods.put(gfMethod, method);
     }
 
     public void addBeforeMethod(GFMethod gfMethod, Method method) {
-	before_methods.put(gfMethod, method);
+	this.beforeMethods.put(gfMethod, method);
     }
 
     public void addAfterMethod(GFMethod gfMethod, Method method) {
-	after_methods.put(gfMethod, method);
+	this.afterMethods.put(gfMethod, method);
+    }
+
+    public void addAroundMethod(GFMethod gfMethod, Method method) {
+	this.aroundMethods.put(gfMethod, method);
     }
 
     public List<Entry<GFMethod, Method>> getEffectiveMethod(Object[] args) {
 	List<Entry<GFMethod, Method>> methods = new ArrayList<>();
-	methods.addAll(getApplicableMethods(before_methods, args));
-	methods.addAll(getApplicableMethods(primary_methods, args));
-	methods.addAll(getApplicableMethods(after_methods, args));
+	methods.addAll(this.getApplicableMethods(this.aroundMethods, args));
+	methods.addAll(this.getApplicableMethods(this.beforeMethods, args));
+	methods.addAll(this.getApplicableMethods(this.primaryMethods, args));
+	methods.addAll(this.getApplicableMethods(this.afterMethods, args));
 	return methods;
     }
 

@@ -1,6 +1,5 @@
 package ist.meic.pa.GenericFunctions;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -45,6 +44,7 @@ public class GenericFunction {
 		}
 
 		return result;
+
 	}
 
 	private String getCause(Object... args) {
@@ -66,7 +66,6 @@ public class GenericFunction {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	public void addBeforeMethod(GFMethod method) {
