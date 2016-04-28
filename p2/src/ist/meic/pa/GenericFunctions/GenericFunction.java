@@ -3,7 +3,6 @@ package ist.meic.pa.GenericFunctions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -39,9 +38,7 @@ public class GenericFunction {
 			}
 			for (it = effectiveMethod.iterator(); it.hasNext();) {
 				Entry<GFMethod, Method> m = it.next();
-				Method value = m.getValue();
-				GFMethod key = m.getKey();
-				result = value.invoke(key, args);
+				result = m.getValue().invoke(m.getKey(), args);
 			}
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();

@@ -1,13 +1,12 @@
 package ist.meic.pa.GenericFunctions;
 import java.util.Arrays;
-import java.util.List;
 
 public class Main {
 
 	
 	public static void main(String[] args) {
-//		Tests.t1();
-		Tests.t2();
+		Tests.t1();
+//		Tests.t2();
 //		Tests.t3();
 	}
 	
