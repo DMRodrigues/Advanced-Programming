@@ -5,9 +5,10 @@ public class Main {
 
 	
 	public static void main(String[] args) {
-		Tests.t1();
+		
+//		Tests.t1();
 //		Tests.t2();
-//		Tests.t3();
+		Tests.t3();
 	}
 	
 	public static void println(Object obj) {

@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 public class GenericFunction {
 
 	private final String name;
-	private Methods methods = new Methods();
+	private StandardMethodCombination methods = new StandardMethodCombination();
 
 	public GenericFunction(String name) {
 		this.name = name;
@@ -37,7 +37,13 @@ public class GenericFunction {
 			}
 			for (it = effectiveMethod.iterator(); it.hasNext();) {
 				Entry<GFMethod, Method> m = it.next();
-				result = m.getValue().invoke(m.getKey(), args);
+				Method method = m.getValue();
+				GFMethod gfMethod = m.getKey();
+				method.setAccessible(true);
+				if(method.getReturnType() == Object.class)
+					result = method.invoke(gfMethod, args);
+				else
+					method.invoke(gfMethod, args);
 			}
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();

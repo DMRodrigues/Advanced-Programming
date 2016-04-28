@@ -38,7 +38,7 @@ public class Tests {
 			}
 		});
 		add.addMethod(new GFMethod() {
-			Object[] call(Object[] a, Object[] b) {
+			Object call(Object[] a, Object[] b) {
 				Object[] r = new Object[a.length];
 				for (int i = 0; i < a.length; i++) {
 					r[i] = add.call(a[i], b[i]);

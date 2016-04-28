@@ -1,4 +1,4 @@
 package ist.meic.pa.GenericFunctions;
 
 
-public interface GFMethod {}
+public class GFMethod {}
