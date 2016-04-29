@@ -17,7 +17,6 @@ public class StandardMethodCombination {
 			Class<?>[] m1ParamTypes = m1.getValue().getParameterTypes();
 			Class<?>[] m2ParamTypes = m2.getValue().getParameterTypes();
 
-			// ASSUMIR METODOS COM O MESMO NUMERO DE PARAMETROS??
 			for (int i = 0; i < m1ParamTypes.length; i++) {
 				if (m1ParamTypes[i] != m2ParamTypes[i] && m2ParamTypes[i].isAssignableFrom(m1ParamTypes[i])) {
 					return -1;
