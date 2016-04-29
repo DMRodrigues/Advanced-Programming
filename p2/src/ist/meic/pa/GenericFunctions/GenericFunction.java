@@ -17,7 +17,6 @@ public class GenericFunction {
 	}
 
 	public void addMethod(GFMethod method) {
-
 		try {
 			Method[] m = method.getClass().getDeclaredMethods();
 			if (m.length > 0 && m[0].getName().equals("call"))
@@ -27,30 +26,47 @@ public class GenericFunction {
 		}
 	}
 
+	public void addAfterMethod(GFMethod method) {
+		try {
+			Method[] m = method.getClass().getDeclaredMethods();
+			if (m.length > 0 && m[0].getName().equals("call"))
+				methods.addAfterMethod(method, m[0]);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void addBeforeMethod(GFMethod method) {
+		try {
+			Method[] m = method.getClass().getDeclaredMethods();
+			if (m.length > 0 && m[0].getName().equals("call"))
+				methods.addBeforeMethod(method, m[0]);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+	}
 	public Object call(Object... args) {
 		Object result = null;
 		Iterator<Entry<GFMethod, Method>> it = null;
 		try {
 			List<Entry<GFMethod, Method>> effectiveMethod = methods.getEffectiveMethod(args);
 			if (effectiveMethod.isEmpty()) {
-				throw new IllegalArgumentException(getCause(args));
+				throw new IllegalArgumentException(this.getCause(args));
 			}
 			for (it = effectiveMethod.iterator(); it.hasNext();) {
 				Entry<GFMethod, Method> m = it.next();
-				Method method = m.getValue();
-				GFMethod gfMethod = m.getKey();
-				method.setAccessible(true);
-				if(method.getReturnType() == Object.class)
-					result = method.invoke(gfMethod, args);
-				else
-					method.invoke(gfMethod, args);
+				result = m.getValue().invoke(m.getKey(), args);
 			}
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 
-		return result;
+		//PERGUNTAR AO PROF SOBRE RETURNS NULL
+		if (result == null)
+			result = "";
 
+		return result;
 	}
 
 	private String getCause(Object... args) {
@@ -62,26 +78,6 @@ public class GenericFunction {
 		int length = cause.length();
 		cause.replace(length - 2, length, "]");
 		return cause.toString();
-	}
-
-	public void addAfterMethod(GFMethod method) {
-		try {
-			Method[] m = method.getClass().getDeclaredMethods();
-			if (m.length > 0 && m[0].getName().equals("call"))
-				methods.addAfterMethod(method, m[0]);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void addBeforeMethod(GFMethod method) {
-		try {
-			Method[] m = method.getClass().getDeclaredMethods();
-			if (m.length > 0 && m[0].getName().equals("call"))
-				methods.addBeforeMethod(method, m[0]);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

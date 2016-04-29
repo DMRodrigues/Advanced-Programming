@@ -29,22 +29,11 @@ public class BoxingProfilerManager {
 	private static final String UNBOX_TEMPLATE = ""
             + "{ "
 			+       "ist.meic.pa.BoxingProfilerManager.inc(\"%s\", \"%s\", \"%s\");"
-<<<<<<< HEAD
 			+       "$_ = $proceed(); "
             + "}";
 
 	//TreeMap para garantir ordem natural das chaves
-    
-	private static Map<String, Map<String, Map<String, Integer>>> resultMap =
-    
-        new TreeMap<String, Map<String, Map<String, Integer>>>();
-
-=======
-			+       "$_ = $proceed(); " + "}";
-
-	// TreeMap para garantir ordem natural das chaves
 	private static Map<String, Map<String, Map<String, Integer>>> resultMap = new TreeMap<String, Map<String, Map<String, Integer>>>();
->>>>>>> b4c2ab74997f1da75860fc7fe20b72554f969061
 
 	public BoxingProfilerManager(String[] args) throws NotFoundException {
 		this.ctClass = ClassPool.getDefault().get(args[0]);
@@ -140,13 +129,8 @@ public class BoxingProfilerManager {
 			for (String className : resultMap.get(methodName).keySet()) {
 				for (String operation : resultMap.get(methodName).get(className).keySet()) {
 					Integer counter = resultMap.get(methodName).get(className).get(operation);
-<<<<<<< HEAD
                     if(counter > 0)
                     	System.err.println(methodName + " " + operation + " " + counter + " " + className);
-=======
-					if (counter > 0)
-						System.err.println(methodName + " " + operation + " " + counter + " " + className);
->>>>>>> b4c2ab74997f1da75860fc7fe20b72554f969061
 				}
 			}
 		}
