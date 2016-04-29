@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 public class GenericFunction {
 
     private final String name;
-    private Methods methods = new Methods();
+    private GFMethod methods = new GFMethod();
 
     public GenericFunction(String name) {
 	this.name = name;
@@ -63,7 +63,7 @@ public class GenericFunction {
 	try {
 	    List<Entry<GFMethod, Method>> effectiveMethod = methods.getEffectiveMethod(args);
 	    if (effectiveMethod.isEmpty()) {
-		throw new IllegalArgumentException(getCause(args));
+		throw new IllegalArgumentException(this.getCause(args));
 	    }
 	    for (it = effectiveMethod.iterator(); it.hasNext();) {
 		Entry<GFMethod, Method> m = it.next();

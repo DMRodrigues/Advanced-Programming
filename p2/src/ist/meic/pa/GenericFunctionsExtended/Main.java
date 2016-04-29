@@ -5,21 +5,21 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-	/*
-		Tests test = new Tests();
-		test.t1();
-	
-		System.out.println("-------------------------------");
-		Test test = new Tests();
-		test.t2();
-	
-		System.out.println("-------------------------------");
-		Test test = new Tests();
-		test.t3();
-	*/
+
+	Tests test1 = new Tests();
+	test1.t1();
+
 	System.out.println("-------------------------------");
-	Tests test = new Tests();
-	test.t4();
+	Tests test2 = new Tests();
+	test2.t2();
+
+	System.out.println("-------------------------------");
+	Tests test3 = new Tests();
+	test3.t3();
+
+	System.out.println("-------------------------------");
+	Tests test4 = new Tests();
+	test4.t4();
 
     }
 

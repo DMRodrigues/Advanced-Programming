@@ -13,6 +13,16 @@ public class Tests {
 	    }
 	});
 	add.addMethod(new GFMethod() {
+	    Object call(Object a, Object b) {
+		return a.toString() + b.toString();
+	    }
+	});
+	add.addMethod(new GFMethod() {
+	    Object call(Number a, Number b) {
+		return a.intValue() + b.intValue();
+	    }
+	});
+	add.addMethod(new GFMethod() {
 	    Object call(Object[] a, Object[] b) {
 		Object[] r = new Object[a.length];
 		for (int i = 0; i < a.length; i++) {
@@ -24,7 +34,7 @@ public class Tests {
 
 	Main.println(add.call(1, 3));
 	Main.println(add.call(new Object[] { 1, 2, 3 }, new Object[] { 4, 5, 6 }));
-	// Main.println(add.call(new Object[] { 1, 2 }, 3)); ERROR OK
+	//Main.println(add.call(new Object[] { 1, 2 }, 3)); ERROR OK
     }
 
     public void t2() {
@@ -136,29 +146,78 @@ public class Tests {
 		return "";
 	    }
 	});
+	// -----------------------------------------------------------------------------------------
 	explain.addAfterMethod(new GFMethod() {
 	    void call(Integer entity) {
-		System.out.printf(" (in hexadecimal, is %x)", entity);
+		System.out.printf(" INTEGER ", entity);
 	    }
 	});
+	explain.addAfterMethod(new GFMethod() {
+	    void call(Object entity) {
+		System.out.printf(" OBJECT ", entity);
+	    }
+	});
+	explain.addAfterMethod(new GFMethod() {
+	    void call(Number entity) {
+		System.out.printf(" NUMBER ", entity);
+	    }
+	});
+	explain.addAfterMethod(new GFMethod() {
+	    void call(String entity) {
+		System.out.printf(" STRING ", entity);
+	    }
+	});
+	// -----------------------------------------------------------------------------------------
 	explain.addBeforeMethod(new GFMethod() {
 	    void call(Number entity) {
 		System.out.printf("The number ");
 	    }
 	});
-	explain.addAroundMethod(new GFMethod() {
+	// -----------------------------------------------------------------------------------------
+	explain.addAroundMethod(new GFMethod(true) {
 	    void call(Integer entity) {
-		System.out.printf("Around Integer ");
+		System.out.printf("Around Integer |");
 	    }
 	});
-	explain.addAroundMethod(new GFMethod() {
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(Object entity) {
+		System.out.printf("Around Object |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(Object[] entity) {
+		System.out.printf("Around Object[] |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
 	    void call(Number entity) {
-		System.out.printf("Around Number ");
+		System.out.printf("Around Number |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(String entity) {
+		System.out.printf("Around String |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(Double entity) {
+		System.out.printf("Around Double |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(Float entity) {
+		System.out.printf("Around Float |");
+	    }
+	});
+	explain.addAroundMethod(new GFMethod(true) {
+	    void call(Character entity) {
+		System.out.printf("Around Character |");
 	    }
 	});
 
-	Main.println(explain.call(new Integer(123)));
+	Main.println(explain.call(123));
 	Main.println(explain.call("Hi"));
 	Main.println(explain.call(3.14159));
+	Main.println(explain.call(new Character('a')));
     }
 }
