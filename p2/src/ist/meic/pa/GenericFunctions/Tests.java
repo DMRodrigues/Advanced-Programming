@@ -145,6 +145,12 @@ public class Tests {
 			}
 		});
 		explain.addMethod(new GFMethod() {
+			Object call(Double entity) {
+				System.out.printf("|primary-double|");
+				return "";
+			}
+		});
+		explain.addMethod(new GFMethod() {
 			Object call(String entity) {
 				System.out.printf("|primary-string|");
 				return "";
@@ -158,6 +164,16 @@ public class Tests {
 		explain.addAfterMethod(new GFMethod() {
 			void call(Integer entity) {
 				System.out.printf("|after-integer|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(Double entity) {
+				System.out.printf("|after-double|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(Long entity) {
+				System.out.printf("|before-long|");
 			}
 		});
 		explain.addBeforeMethod(new GFMethod() {
@@ -180,10 +196,21 @@ public class Tests {
 				System.out.printf("|before-integer|");
 			}
 		});
+		explain.addBeforeMethod(new GFMethod() {
+			void call(Long entity) {
+				System.out.printf("|before-long|");
+			}
+		});
+		explain.addBeforeMethod(new GFMethod() {
+			void call(Double entity) {
+				System.out.printf("|before-double|");
+			}
+		});
 
 		System.out.println("----------------------TEST 4-----------------------");
 		Main.println(explain.call(123));
 		Main.println(explain.call(new Long(1)));
+		Main.println(explain.call(3.14159));
 	}
 
 }
