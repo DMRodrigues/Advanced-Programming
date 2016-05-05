@@ -3,6 +3,10 @@ package ist.meic.pa.GenericFunctions;
 import java.util.Arrays;
 import java.util.List;
 
+import ist.meic.pa.GenericFunctionsExtended.A;
+import ist.meic.pa.GenericFunctionsExtended.B;
+import ist.meic.pa.GenericFunctionsExtended.C;
+
 public class Tests {
 
 	public static void t1() {
@@ -211,6 +215,76 @@ public class Tests {
 		Main.println(explain.call(123));
 		Main.println(explain.call(new Long(1)));
 		Main.println(explain.call(3.14159));
+	}
+	public static void t8(){
+		final GenericFunction explain = new GenericFunction("explain");
+		explain.addBeforeMethod(new GFMethod() {
+			void call(A entity) {
+				System.out.printf("|before-A|");
+			}
+		});
+		explain.addBeforeMethod(new GFMethod() {
+			void call(C entity) {
+				System.out.printf("|before-C|");
+			}
+		});
+		explain.addBeforeMethod(new GFMethod() {
+			void call(C entity) {
+				System.out.printf("|before-D|");
+			}
+		});
+		explain.addBeforeMethod(new GFMethod() {
+			void call(B entity) {
+				System.out.printf("|before-B|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(A entity) {
+				System.out.printf("|after-A|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(C entity) {
+				System.out.printf("|after-C|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(C entity) {
+				System.out.printf("|after-D|");
+			}
+		});
+		explain.addAfterMethod(new GFMethod() {
+			void call(B entity) {
+				System.out.printf("|after-B|");
+			}
+		});
+		explain.addMethod(new GFMethod() {
+			Object call(A entity) {
+				System.out.printf("|A|");
+				return "A";
+			}
+		});
+		explain.addMethod(new GFMethod() {
+			Object call(B entity) {
+				System.out.printf("|B|");
+				return "B";
+			}
+		});
+		explain.addMethod(new GFMethod() {
+			Object call(C entity) {
+				System.out.printf("|C|");
+				return "C";
+			}
+		});
+		explain.addMethod(new GFMethod() {
+			Object call(C entity) {
+				System.out.printf("|D|");
+				return "D";
+			}
+		});
+		System.out.println("----------------------TEST 8-----------------------");
+		Main.println(explain.call(new A()));
+		Main.println(explain.call(new B()));
 	}
 
 }

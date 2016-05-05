@@ -13,6 +13,7 @@ public class Main {
 			Tests.t2();
 			Tests.t3();
 			Tests.t4();
+			Tests.t8();
 
 		}
 	}

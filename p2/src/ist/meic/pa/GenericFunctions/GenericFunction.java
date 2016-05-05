@@ -56,13 +56,17 @@ public class GenericFunction {
 			}
 			for (it = effectiveMethod.iterator(); it.hasNext();) {
 				Entry<GFMethod, Method> m = it.next();
-				result = m.getValue().invoke(m.getKey(), args);
+				Method value = m.getValue();
+				GFMethod key = m.getKey();
+				if (value.getReturnType() == Object.class)
+					result = value.invoke(key, args);
+				else
+					value.invoke(key, args);
 			}
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 
-		//PERGUNTAR AO PROF SOBRE RETURNS NULL
 		if (result == null)
 			result = "";
 
