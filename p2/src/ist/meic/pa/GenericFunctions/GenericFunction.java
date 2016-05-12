@@ -58,12 +58,13 @@ public class GenericFunction {
 				Entry<GFMethod, Method> m = it.next();
 				Method value = m.getValue();
 				GFMethod key = m.getKey();
+				value.setAccessible(true);
 				if (value.getReturnType() == Object.class)
 					result = value.invoke(key, args);
 				else
 					value.invoke(key, args);
 			}
-		} catch (IllegalAccessException | InvocationTargetException e) {
+		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 

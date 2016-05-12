@@ -70,6 +70,7 @@ public class GenericFunction {
 				Entry<GFMethod, Method> m = it.next();
 				Method value = m.getValue();
 				GFMethod key = m.getKey();
+				value.setAccessible(true);
 				if (!foundResult && value.getReturnType() == Object.class){
 					result = value.invoke(key, args);
 					foundResult = true;

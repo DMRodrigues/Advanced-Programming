@@ -20,9 +20,9 @@ public class Main {
 
 	public static void println(Object obj) {
 		if (obj instanceof Object[]) {
-			System.out.println(Arrays.deepToString((Object[]) obj));
+			System.err.println(Arrays.deepToString((Object[]) obj));
 		} else {
-			System.out.println(obj);
+			System.err.println(obj);
 		}
 	}
 
