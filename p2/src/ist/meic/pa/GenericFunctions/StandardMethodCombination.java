@@ -45,10 +45,12 @@ public class StandardMethodCombination {
 	public List<Entry<GFMethod, Method>> getEffectiveMethod(Object[] args) {
 		List<Entry<GFMethod, Method>> methods = new ArrayList<>();
 
-		methods.addAll(this.getApplicableMethods(this.beforeMethods, args));
 		List<Entry<GFMethod, Method>> primary = this.getApplicableMethods(this.primaryMethods, args);
-		if(!primary.isEmpty())
-			methods.addAll(primary.subList(0, 1));
+		if(primary.isEmpty())
+			return primary;
+		
+		methods.addAll(this.getApplicableMethods(this.beforeMethods, args));
+		methods.addAll(primary.subList(0, 1));
 
 		// most-specific-last order
 		List<Entry<GFMethod, Method>> afterMethods = this.getApplicableMethods(this.afterMethods, args);
