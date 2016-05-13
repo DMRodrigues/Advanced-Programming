@@ -50,21 +50,31 @@ public class StandardMethodCombination {
 	public List<Entry<GFMethod, Method>> getEffectiveMethod(Object[] args) {
 		List<Entry<GFMethod, Method>> methods = new ArrayList<>();
 
-		methods.addAll(getNextMethodsCall(this.getApplicableMethods(this.aroundMethods, args)));
-		if (!methods.isEmpty())
-			return methods;
-		
-		methods.addAll(this.getApplicableMethods(this.beforeMethods, args));
-		List<Entry<GFMethod, Method>> primary = getNextMethodsCall(this.getApplicableMethods(this.primaryMethods, args));
-		if(primary.isEmpty())
+		List<Entry<GFMethod, Method>> primary = this.getApplicableMethods(this.primaryMethods, args);
+		if (primary.isEmpty())
 			return primary;
-		
-		methods.addAll(primary);
+
+		List<Entry<GFMethod, Method>> around = this.getApplicableMethods(this.aroundMethods, args);
+		List<Entry<GFMethod, Method>> before = this.getApplicableMethods(this.beforeMethods, args);
 
 		// most-specific-last order
-		List<Entry<GFMethod, Method>> afterMethods = this.getApplicableMethods(this.afterMethods, args);
-		Collections.reverse(afterMethods);
-		methods.addAll(afterMethods);
+		List<Entry<GFMethod, Method>> after = this.getApplicableMethods(this.afterMethods, args);
+		Collections.reverse(after);
+
+		around = getNextMethodsCall(around);
+		if (around.isEmpty()) {
+			methods.addAll(before);
+			methods.addAll(getNextMethodsCall(primary));
+			methods.addAll(after);
+		} else {
+			int last = around.size() - 1;
+			methods.addAll(around);
+			methods.addAll(before);
+			if (around.get(last).getKey().callNextMethod()) {
+				methods.addAll(getNextMethodsCall(primary));
+			}
+			methods.addAll(after);
+		}
 
 		return methods;
 	}

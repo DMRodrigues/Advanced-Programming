@@ -10,21 +10,21 @@ import java.util.Map.Entry;
 
 public class StandardMethodCombination {
 
-	private Comparator<Entry<GFMethod, Method>> methodComparator = new Comparator<Entry<GFMethod, Method>>() {
-		@Override
-		public int compare(Entry<GFMethod, Method> m1, Entry<GFMethod, Method> m2) {
-
-			Class<?>[] m1ParamTypes = m1.getValue().getParameterTypes();
-			Class<?>[] m2ParamTypes = m2.getValue().getParameterTypes();
-
-			for (int i = 0; i < m1ParamTypes.length; i++) {
-				if (m1ParamTypes[i] != m2ParamTypes[i] && m2ParamTypes[i].isAssignableFrom(m1ParamTypes[i])) {
-					return -1;
-				}
-			}
-			return 1;
-		}
-	};
+	private Comparator<Entry<GFMethod, Method>> methodComparator;// = new Comparator<Entry<GFMethod, Method>>() {
+//		@Override
+//		public int compare(Entry<GFMethod, Method> m1, Entry<GFMethod, Method> m2) {
+//
+//			Class<?>[] m1ParamTypes = m1.getValue().getParameterTypes();
+//			Class<?>[] m2ParamTypes = m2.getValue().getParameterTypes();
+//
+//			for (int i = 0; i < m1ParamTypes.length; i++) {
+//				if (m1ParamTypes[i] != m2ParamTypes[i] && m2ParamTypes[i].isAssignableFrom(m1ParamTypes[i])) {
+//					return -1;
+//				}
+//			}
+//			return 1;
+//		}
+	//};
 
 	private List<Entry<GFMethod, Method>> beforeMethods = new ArrayList<Entry<GFMethod, Method>>();
 	private List<Entry<GFMethod, Method>> primaryMethods = new ArrayList<Entry<GFMethod, Method>>();
